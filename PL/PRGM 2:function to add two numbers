@@ -1,0 +1,21 @@
+SQL> create or replace function adder(n1 in number, n2 in number)
+  2       return number
+  3        is
+  4        n3 number(8);
+  5        begin
+  6        n3 :=n1+n2;
+  7        return n3;
+  8        end;
+  9        /
+
+Function created.
+
+SQL>  DECLARE
+  2         n3 number(2);
+  3      BEGIN
+  4         n3 := adder(11,22);
+  5         dbms_output.put_line('Addition is: ' || n3);
+  6      END;
+  7      /
+OUTPUT:
+Addition is: 33
