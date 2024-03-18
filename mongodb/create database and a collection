@@ -1,0 +1,17 @@
+test> use parvathy
+switched to db parvathy
+parvathy> db.createCollection("dbms")
+{ ok: 1 }
+parvathy> db.dbms.insert({Rollnum:1,Name:"Parvathy"})
+{
+  acknowledged: true,
+  insertedIds: { '0': ObjectId('65f551b8e93d31e1db8bf202') }
+}
+parvathy> db.dbms.find().pretty()
+[
+  {
+    _id: ObjectId('65f551b8e93d31e1db8bf202'),
+    Rollnum: 1,
+    Name: 'Parvathy'
+  }
+]
