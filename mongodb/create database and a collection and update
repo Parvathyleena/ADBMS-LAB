@@ -1,5 +1,6 @@
 test> use parvathy
 switched to db parvathy
+                CREATE COLLECTION
 parvathy> db.createCollection("dbms")
 { ok: 1 }
 parvathy> db.dbms.insert({Rollnum:1,Name:"Parvathy"})
@@ -15,6 +16,7 @@ parvathy> db.dbms.find().pretty()
     Name: 'Parvathy'
   }
 ]
+                  UPDATE
 parvathy> db.dbms.updateOne({Rollnum:1},{$set:{name:"Parvathy Mohanan"}})
 {
   acknowledged: true,
@@ -32,3 +34,6 @@ parvathy> db.dbms.find()
     name: 'Parvathy Mohanan'
   }
 ]
+                    DROP DATABASE
+parvathy> db.dropDatabase()
+{ ok: 1, dropped: 'parvathy' }
