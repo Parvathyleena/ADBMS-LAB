@@ -1,0 +1,230 @@
+        1.Create database named college,collection named s2mca
+test> use college
+switched to db college
+college> db.createCollection("s2mca")
+{ ok: 1 }
+        2.Insert data
+college> db.s2mca.insert([{rollnum:1,name:'ram',age:20,div:'A',sub:['phy','che'],credit:8}])
+DeprecationWarning: Collection.insert() is deprecated. Use insertOne, insertMany, or bulkWrite.
+{
+  acknowledged: true,
+  insertedIds: { '0': ObjectId('6613a741a760bdc2898bf202') }
+}
+college> db.s2mca.insert([{rollnum:2,name:'Sam',age:20,div:'B',sub:['phy','maths'],credit:9}])
+{
+  acknowledged: true,
+  insertedIds: { '0': ObjectId('6613a79ea760bdc2898bf203') }
+}
+college> db.s2mca.insert([{rollnum:3,name:'June',age:21,div:'C',sub:['phy','Eng'],credit:7}])
+{
+  acknowledged: true,
+  insertedIds: { '0': ObjectId('6613a7eaa760bdc2898bf204') }
+}
+        3.db.s2mca.find()
+college> db.s2mca.find()
+[
+  {
+    _id: ObjectId('6613a741a760bdc2898bf202'),
+    rollnum: 1,
+    name: 'ram',
+    age: 20,
+    div: 'A',
+    sub: [ 'phy', 'che' ],
+    credit: 8
+  {
+    _id: ObjectId('6613a79ea760bdc2898bf203'),
+    rollnum: 2,
+    name: 'Sam',
+    age: 20,
+    div: 'B',
+    sub: [ 'phy', 'maths' ],
+    credit: 9
+  },
+  {
+    _id: ObjectId('6613a7eaa760bdc2898bf204'),
+    rollnum: 3,
+    name: 'June',
+    age: 21,
+    div: 'C',
+    sub: [ 'phy', 'Eng' ],
+    credit: 7
+  }
+]
+        4. Display total number of students in one section
+college> db.s2mca.aggregate([{$match:{div:'A'}},{$count:'total stud in A'}]);
+[ { 'total stud in A': 1 } ]
+         5.Displaying the total number of students in both the sections and maximum age from both
+section
+college> db.s2mca.aggregate([{$group:{_id:'$div',total_st:{$sum:1},max_age:{$max:'$age'}}}])
+[
+  { _id: 'A', total_st: 1, max_age: 20 },
+  { _id: 'B', total_st: 1, max_age: 20 },
+  { _id: 'C', total_st: 1, max_age: 21 }
+]
+        6.Displaying details of students whose age is greater than 20 using match stage 
+college> db.s2mca.aggregate([{$match:{age:{$gt:20}}}])
+[
+  {
+    _id: ObjectId('6613a7eaa760bdc2898bf204'),
+    rollnum: 3,
+    name: 'June',
+    age: 21,
+    div: 'C',
+    sub: [ 'phy', 'Eng' ],
+    credit: 7
+  }
+]
+        7.Sorting the students on the basis of age
+college> db.s2mca.aggregate([{'$sort':{'age':1}}])
+[
+  {
+    _id: ObjectId('6613a741a760bdc2898bf202'),
+    rollnum: 1,
+    name: 'ram',
+    age: 20,
+    div: 'A',
+    sub: [ 'phy', 'che' ],
+    credit: 8
+  },
+  {
+    _id: ObjectId('6613a79ea760bdc2898bf203'),
+    rollnum: 2,
+    name: 'Sam',
+    age: 20,
+    div: 'B',
+    sub: [ 'phy', 'maths' ],
+    credit: 9
+  },
+  {
+    _id: ObjectId('6613a7eaa760bdc2898bf204'),
+    rollnum: 3,
+    name: 'June',
+    age: 21,
+    div: 'C',
+    sub: [ 'phy', 'Eng' ],
+    credit: 7
+  }
+]
+        8.Sorting the students on the basis of age in descending order
+college> db.s2mca.aggregate([{'$sort':{'age':-1}}])
+[
+  {
+    _id: ObjectId('6613a7eaa760bdc2898bf204'),
+    rollnum: 3,
+    name: 'June',
+    age: 21,
+    div: 'C',
+    sub: [ 'phy', 'Eng' ],
+    credit: 7
+  },
+  {
+    _id: ObjectId('6613a741a760bdc2898bf202'),
+    rollnum: 1,
+    name: 'ram',
+    age: 20,
+    div: 'A',
+    sub: [ 'phy', 'che' ],
+    credit: 8
+  },
+  {
+    _id: ObjectId('6613a79ea760bdc2898bf203'),
+    rollnum: 2,
+    name: 'Sam',
+    age: 20,
+    div: 'B',
+    sub: [ 'phy', 'maths' ],
+    credit: 9
+  }
+]
+        9.Displaying details of a student having the largest age in the section – B
+college> db.s2mca.aggregate([{$match:{div:"A"}},{'$sort':{'age':-1}},{$limit:1}])
+[
+  {
+    _id: ObjectId('6613a741a760bdc2898bf202'),
+    rollnum: 1,
+    name: 'ram',
+    age: 20,
+    div: 'A',
+    sub: [ 'phy', 'che' ],
+    credit: 8
+  }
+]
+        10.Unwinding students on the basis of subject 
+college> db.s2mca.aggregate([{$unwind:'$sub'}])
+[
+  {
+    _id: ObjectId('6613a741a760bdc2898bf202'),
+    rollnum: 1,
+    name: 'ram',
+    age: 20,
+    div: 'A',
+    sub: 'phy',
+    credit: 8
+  },
+  {
+    _id: ObjectId('6613a741a760bdc2898bf202'),
+    rollnum: 1,
+    name: 'ram',
+    age: 20,
+    div: 'A',
+    sub: 'che',
+    credit: 8
+  },
+  {
+    _id: ObjectId('6613a79ea760bdc2898bf203'),
+    rollnum: 2,
+    name: 'Sam',
+    age: 20,
+    div: 'B',
+    sub: 'phy',
+    credit: 9
+  },
+  {
+    _id: ObjectId('6613a79ea760bdc2898bf203'),
+    rollnum: 2,
+    name: 'Sam',
+    age: 20,
+    div: 'B',
+    sub: 'maths',
+    credit: 9
+  },
+  {
+    _id: ObjectId('6613a7eaa760bdc2898bf204'),
+    rollnum: 3,
+    name: 'June',
+    age: 21,
+    div: 'C',
+    sub: 'phy',
+    credit: 7
+  },
+  {
+    _id: ObjectId('6613a7eaa760bdc2898bf204'),
+    rollnum: 3,
+    name: 'June',
+    age: 21,
+    div: 'C',
+    sub: 'Eng',
+    credit: 7
+  }
+]
+        11..Calculate average age of students
+college> db.s2mca.aggregate([{$group:{_id:'roll',averageAge:{$avg:'$age'}}}]);
+[ { _id: 'roll', averageAge: 20.333333333333332 } ]
+college>
+        12.Count the number of male and female students
+college>db.s2mca.aggregate([{$group:{_id:'$gender',count:{$sum:1}}}]);
+[ { _id: null, count: 3 } ]
+      12.Find courses with highest number of credit
+college> db.s2mca.aggregate([{$sort:{credit:-1}},{$limit:1}])
+[
+  {
+    _id: ObjectId('6613a79ea760bdc2898bf203'),
+    rollnum: 2,
+    name: 'Sam',
+    age: 20,
+    div: 'B',
+    sub: [ 'phy', 'maths' ],
+    credit: 9
+  }
+]
+
